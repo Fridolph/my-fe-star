@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function addScriptTag(src) {
+      var script = document.createElement('script')
+      script.src = src
+      document.body.appendChild(script)
+    }
+
+    window.onload = function() {
+      addScriptTag('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=&json=1&p=3&sid=1462_21079_20697_26350&req=2&csor=0&cb=foo&_=1529932567811')
+    }
+
+    function foo(data) {
+      console.log('return data: ')
+      // console.log(data.status);
+    }
+
+  </script>
+</body>
+</html>
