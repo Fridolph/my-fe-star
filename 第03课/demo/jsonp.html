@@ -7,6 +7,7 @@
   <title>Document</title>
 </head>
 <body>
+  <div>加载顺序：</div>
   <script>
     function addScriptTag(src) {
       var script = document.createElement('script')
@@ -14,15 +15,43 @@
       document.body.appendChild(script)
     }
 
+    function createP(callbackName) {
+      var p = document.createElement('p')
+      p.innerHTML = callbackName
+      document.body.appendChild(p)
+    }
+
     window.onload = function() {
+      // 1. testjsonp
+      addScriptTag('https://www.sojson.com/open/api/kuaidi/get.shtml?orderNo=887180351164743887&callback=testjsonp')
+      // 2. foo
       addScriptTag('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=&json=1&p=3&sid=1462_21079_20697_26350&req=2&csor=0&cb=foo&_=1529932567811')
+      // 3. MusicJsonCallback
+      addScriptTag('https://y.qq.com/download/download.js?jsonpCallback=MusicJsonCallback&loginUin=249121486&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0')
+      // 4. GetListJsonCallback
+      addScriptTag('https://c.y.qq.com/rsc/fcgi-bin/fcg_order_singer_getlist.fcg?utf8=1&uin=249121486&rnd=0.7155534594140986&g_tk=296191540&jsonpCallback=GetListJsonCallback&loginUin=249121486&hostUin=0&format=jsonp&inCharset=utf8&outCharset=GB2312&notice=0&platform=yqq&needNewCode=0')
     }
 
     function foo(data) {
-      console.log('return data: ')
+      createP('foo')
+      console.log('foo', data)
       // console.log(data.status);
     }
 
+    function testjsonp(data) {
+      createP('testjsonp')
+      console.log('testjsonp', data)
+    }
+
+    function MusicJsonCallback(data) {
+      createP('MusicJsonCallback')
+      console.log('MusicJsonCallback', data)
+    }
+
+    function GetListJsonCallback(data) {
+      createP('GetListJsonCallback')
+      console.log('GetListJsonCallback', data)
+    }
   </script>
 </body>
 </html>
