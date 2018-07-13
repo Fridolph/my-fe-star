@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>加载顺序：</div>
+  <script>
+    var callback_list = [];
+    var jsonp_index = -1;
+    var jsonp_done_counts = 0;
+
+    function addScriptTag(src) {
+      ++jsonp_index;
+      var cb = src.match(/(callback|cb|jsonpCallback)=(\w+)/g)[0].split('=')[1];
+      callback_list.push({
+        cb: cb
+      });
+      var cb_name = 'jsonpCallback_' + jsonp_index;
+      src = src.replace(cb, cb_name);
+      window[cb_name] = (function (index) {
+        return function (data) {
+          jsonp_done_counts++;
+          callback_list[index].data = data;
+          if (callback_list.length === jsonp_done_counts) {
+            callback_list.forEach(function (item) {
+              window[item.cb] && window[item.cb](item.data);
+            });
+          }
+        };
+      })(jsonp_index);
+      var script = document.createElement("script");
+      script.src = src;
+      document.body.appendChild(script);
+    }
+
+    function createP(callbackName) {
+      var p = document.createElement("p");
+      p.innerHTML = callbackName;
+      document.body.appendChild(p);
+    }
+
+    window.onload = function () {
+      addScriptTag(
+        "https://www.sojson.com/open/api/kuaidi/get.shtml?orderNo=887180351164743887&callback=testjsonp"
+      );
+      addScriptTag(
+        "https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=&json=1&p=3&sid=1462_21079_20697_26350&req=2&csor=0&cb=foo&_=1529932567811"
+      );
+      // addScriptTag(
+      //   "https://y.qq.com/download/download.js?jsonpCallback=MusicJsonCallback&loginUin=249121486&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0"
+      // );
+      addScriptTag(
+        "https://c.y.qq.com/rsc/fcgi-bin/fcg_order_singer_getlist.fcg?utf8=1&uin=249121486&rnd=0.7155534594140986&g_tk=296191540&jsonpCallback=GetListJsonCallback&loginUin=249121486&hostUin=0&format=jsonp&inCharset=utf8&outCharset=GB2312&notice=0&platform=yqq&needNewCode=0"
+      );
+    };
+
+    function foo(data) {
+      createP("foo");
+      console.log("foo", data);
+      // console.log(data.status);
+    }
+
+    function testjsonp(data) {
+      createP("testjsonp");
+      console.log("testjsonp", data);
+    }
+
+    function MusicJsonCallback(data) {
+      createP("MusicJsonCallback");
+      console.log("MusicJsonCallback", data);
+    }
+
+    function GetListJsonCallback(data) {
+      createP("GetListJsonCallback");
+      console.log("GetListJsonCallback", data);
+    }
+  </script>
+</body>
+
+</html>
